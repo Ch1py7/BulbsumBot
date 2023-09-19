@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "src/*": ["*"],
+      "services": ["/services/*, /services"],
+      "utils": ["/utils/*, /utils"],
+    },
+    "moduleResolution": "node",
+    "outDir": "./dist",
+
+    "target": "ESNext",
+    "module": "commonjs",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noFallthroughCasesInSwitch": true,
+    "sourceMap": true,
+    "skipLibCheck": false,
+    "isolatedModules": true,
+  },
+  "include": [
+    "./src"
+  ],
+  "exclude": [
+    "./node_modules/**/*",
+    "./src/tests/**/*",
+    "./dist/**/*",
+  ]
+}
