@@ -8,6 +8,70 @@ importers:
 
   .: {}
 
+  apps/bulbot:
+    dependencies:
+      awilix:
+        specifier: ^8.0.1
+        version: 8.0.1
+      axios:
+        specifier: ^1.5.0
+        version: 1.5.0
+      cors:
+        specifier: ^2.8.5
+        version: 2.8.5
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      dotenv:
+        specifier: ^16.3.1
+        version: 16.3.1
+      express:
+        specifier: ^4.18.2
+        version: 4.18.2
+      express-validator:
+        specifier: ^7.0.1
+        version: 7.0.1
+      module-alias:
+        specifier: ^2.2.3
+        version: 2.2.3
+      socket.io:
+        specifier: ^4.7.2
+        version: 4.7.2
+      websocket:
+        specifier: ^1.0.34
+        version: 1.0.34
+    devDependencies:
+      '@types/cors':
+        specifier: ^2.8.14
+        version: 2.8.14
+      '@types/express':
+        specifier: ^4.17.17
+        version: 4.17.17
+      '@types/module-alias':
+        specifier: ^2.0.2
+        version: 2.0.2
+      '@types/websocket':
+        specifier: ^1.0.6
+        version: 1.0.6
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^6.0.0
+        version: 6.7.2(@typescript-eslint/parser@6.7.2)(eslint@8.49.0)(typescript@5.2.2)
+      '@typescript-eslint/parser':
+        specifier: ^6.0.0
+        version: 6.7.2(eslint@8.49.0)(typescript@5.2.2)
+      eslint:
+        specifier: ^8.49.0
+        version: 8.49.0
+      eslint-plugin-react-hooks:
+        specifier: ^4.6.0
+        version: 4.6.0(eslint@8.49.0)
+      eslint-plugin-react-refresh:
+        specifier: ^0.4.3
+        version: 0.4.3(eslint@8.49.0)
+      typescript:
+        specifier: ^5.0.2
+        version: 5.2.2
+
   apps/client-auth:
     dependencies:
       awilix:
@@ -71,6 +135,64 @@ importers:
       typescript:
         specifier: ^5.0.2
         version: 5.2.2
+
+  apps/frontend:
+    dependencies:
+      axios:
+        specifier: ^1.5.0
+        version: 1.5.0
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+      socket.io-client:
+        specifier: ^4.7.2
+        version: 4.7.2
+      wouter:
+        specifier: ^2.11.0
+        version: 2.11.0(react@18.2.0)
+    devDependencies:
+      '@types/node':
+        specifier: ^20.6.3
+        version: 20.6.3
+      '@types/react':
+        specifier: ^18.2.15
+        version: 18.2.22
+      '@types/react-dom':
+        specifier: ^18.2.7
+        version: 18.2.7
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^6.0.0
+        version: 6.7.2(@typescript-eslint/parser@6.7.2)(eslint@8.49.0)(typescript@5.2.2)
+      '@typescript-eslint/parser':
+        specifier: ^6.0.0
+        version: 6.7.2(eslint@8.49.0)(typescript@5.2.2)
+      '@unocss/postcss':
+        specifier: ^0.56.0
+        version: 0.56.0(postcss@8.4.29)
+      '@vitejs/plugin-react':
+        specifier: ^4.0.3
+        version: 4.0.4(vite@4.4.9)
+      eslint:
+        specifier: ^8.45.0
+        version: 8.49.0
+      eslint-plugin-react-hooks:
+        specifier: ^4.6.0
+        version: 4.6.0(eslint@8.49.0)
+      eslint-plugin-react-refresh:
+        specifier: ^0.4.3
+        version: 0.4.3(eslint@8.49.0)
+      typescript:
+        specifier: ^5.0.2
+        version: 5.2.2
+      unocss:
+        specifier: ^0.56.0
+        version: 0.56.0(postcss@8.4.29)(vite@4.4.9)
+      vite:
+        specifier: ^4.4.5
+        version: 4.4.9(@types/node@20.6.3)
 
   apps/tts-frontend:
     dependencies:
@@ -775,10 +897,6 @@ packages:
     resolution: {integrity: sha512-Oeo5NEjAceFgN8OzGiLXPswgv2GBmrDGuTnLS0sQ8g4Mq5sB5c97Hu5B+n9Gu/j+5Y+oUb4TSawHXkZ8MENGyw==}
     dev: true
 
-  /@types/node@20.6.2:
-    resolution: {integrity: sha512-Y+/1vGBHV/cYk6OI1Na/LHzwnlNCAfU3ZNGrc1LdRe/LAIbdDPTTv/HU3M7yXN448aTVDq3eKRm2cg7iKLb8gw==}
-    dev: true
-
   /@types/node@20.6.3:
     resolution: {integrity: sha512-HksnYH4Ljr4VQgEy2lTStbCKv/P590tmPe5HqOnv9Gprffgv5WXAY+Y5Gqniu0GGqeTCUdBnzC3QSrzPkBkAMA==}
 
@@ -834,7 +952,7 @@ packages:
   /@types/websocket@1.0.6:
     resolution: {integrity: sha512-JXkliwz93B2cMWOI1ukElQBPN88vMg3CruvW4KVSKpflt3NyNCJImnhIuB/f97rG7kakqRJGFiwkA895Kn02Dg==}
     dependencies:
-      '@types/node': 20.6.2
+      '@types/node': 20.6.3
     dev: true
 
   /@typescript-eslint/eslint-plugin@6.7.2(@typescript-eslint/parser@6.7.2)(eslint@8.49.0)(typescript@5.2.2):
@@ -1610,6 +1728,20 @@ packages:
   /encodeurl@1.0.2:
     resolution: {integrity: sha512-TPJXq8JqFaVYm2CWmPvnP2Iyo4ZSM7/QKcSmuMLDObfpH5fi7RUGmd/rTDf+rut/saiDiQEeVTNgAmJEdAOx0w==}
     engines: {node: '>= 0.8'}
+    dev: false
+
+  /engine.io-client@6.5.2:
+    resolution: {integrity: sha512-CQZqbrpEYnrpGqC07a9dJDz4gePZUgTPMU3NKJPSeQOyw27Tst4Pl3FemKoFGAlHzgZmKjoRmiJvbWfhCXUlIg==}
+    dependencies:
+      '@socket.io/component-emitter': 3.1.0
+      debug: 4.3.4
+      engine.io-parser: 5.2.1
+      ws: 8.11.0
+      xmlhttprequest-ssl: 2.0.0
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
     dev: false
 
   /engine.io-parser@5.2.1:
@@ -2825,6 +2957,20 @@ packages:
       - utf-8-validate
     dev: false
 
+  /socket.io-client@4.7.2:
+    resolution: {integrity: sha512-vtA0uD4ibrYD793SOIAwlo8cj6haOeMHrGvwPxJsxH7CeIksqJ+3Zc06RvWTIFgiSqx4A3sOnTXpfAEE2Zyz6w==}
+    engines: {node: '>=10.0.0'}
+    dependencies:
+      '@socket.io/component-emitter': 3.1.0
+      debug: 4.3.4
+      engine.io-client: 6.5.2
+      socket.io-parser: 4.2.4
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+    dev: false
+
   /socket.io-parser@4.2.4:
     resolution: {integrity: sha512-/GbIKmo8ioc+NIWIhwdecY0ge+qVBSMdgxGygevmdHj24bsfgtCmcUUcQ5ZzcylGFHsN3k4HB4Cgkl96KVnuew==}
     engines: {node: '>=10.0.0'}
@@ -3157,6 +3303,11 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+    dev: false
+
+  /xmlhttprequest-ssl@2.0.0:
+    resolution: {integrity: sha512-QKxVRxiRACQcVuQEYFsI1hhkrMlrXHPegbbd1yn9UHOmRxY+si12nQYzri3vbzt8VdTTRviqcKxcyllFas5z2A==}
+    engines: {node: '>=0.4.0'}
     dev: false
 
   /yaeti@0.0.6:

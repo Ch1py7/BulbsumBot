@@ -3,8 +3,9 @@
     "baseUrl": "./src",
     "paths": {
       "src/*": ["*"],
-      "services": ["/services/*, /services"],
-      "utils": ["/utils/*, /utils"],
+      "application": ["/application/*, /application"],
+      "domain": ["/domain/*, /domain"],
+      "infrastructure": ["/infrastructure/*, /infrastructure"],
     },
     "moduleResolution": "node",
     "outDir": "./dist",
