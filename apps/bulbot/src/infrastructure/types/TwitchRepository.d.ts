@@ -31,3 +31,8 @@ export interface RefreshTokenResponse {
   scope: Array<string>
   token_type: string
 }
+
+export interface ActiveTTS {
+  login: string
+  token: string
+}
