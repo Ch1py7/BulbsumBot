@@ -8,10 +8,9 @@ export const router = express.Router()
 
 router.get('/getAccountInfo',
   async (req: express.Request, res: express.Response) => {
-    const { code } = req.query
+    const { token } = req.query as { token: string }
 
     try {
-      const token = code as string
       const command = new GetAccountInfoCommand({ token })
       const getAccountInfo = container.resolve('getAccountInfo')
       const response = await getAccountInfo.execute(command)
@@ -29,10 +28,9 @@ router.get('/getAccountInfo',
 
 router.get('/getOAuthToken',
   async (req: express.Request, res: express.Response) => {
-    const { token } = req.query
+    const { code } = req.query as { code: string }
 
     try {
-      const code = token as string
       const command = new GetOAuthTokenCommand({ code })
       const getOAuthToken = container.resolve('getOAuthToken')
       const response = await getOAuthToken.execute(command)
@@ -50,14 +48,33 @@ router.get('/getOAuthToken',
 
 router.get('/refreshToken',
   async (req: express.Request, res: express.Response) => {
-    const { code } = req.body
+    const { code } = req.query as { code: string }
 
     try {
       const command = new RefreshTokenCommand({ code })
       const refreshToken = container.resolve('refreshToken')
-      const response = refreshToken.execute(command)
+      const response = await refreshToken.execute(command)
 
       res.status(200).send(response)
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        res.status(409).json({message: error.message})
+      }
+      res.status(500).send({ message: 'An error occurred while processing your request.' })
+      console.error(error)
+    }
+  }
+)
+
+router.get('/tts',
+  (req: express.Request, res: express.Response) => {
+    const { login, token } = req.query as { login: string, token: string }
+
+    try {
+      const twitchBot = container.resolve('twitchBot')
+      twitchBot.chatReader(login, token)
+
+      res.status(200)
     } catch (error: unknown) {
       if (error instanceof Error) {
         res.status(409).json({message: error.message})

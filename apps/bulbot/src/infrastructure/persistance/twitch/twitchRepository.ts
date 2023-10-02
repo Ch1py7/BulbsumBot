@@ -1,17 +1,25 @@
-import { GetAccountInfo, GetAccountInfoResponse, GetOAuthToken, RefreshToken, GetOAuthTokenResponse, RefreshTokenResponse } from 'infrastructure/types/TwitchRepository'
+import {
+  ActiveTTS,
+  GetAccountInfo,
+  GetAccountInfoResponse,
+  GetOAuthToken,
+  GetOAuthTokenResponse,
+  RefreshToken,
+  RefreshTokenResponse
+} from 'infrastructure/types/TwitchRepository'
 
 export class TwitchRepository {
   private _TWITCH_URL = 'https://id.twitch.tv/oauth2'
   private _axios: Dependencies['axios']
-  private _config: Dependencies['config']
-  private _token: string
-  private _account_id: string
+  private _twitchBot: Dependencies['twitchBot']
+  private _config = {
+    bot_client_id: process.env.BOT_CLIENT_ID,
+    bot_secret: process.env.BOT_SECRET,
+  }
 
-  constructor({ axios, config }: Pick<Dependencies, 'axios' | 'config'>, token: string, account_id: string) {
+  constructor({ axios, twitchBot }: Pick<Dependencies, 'axios' | 'twitchBot'>) {
     this._axios = axios
-    this._config = config
-    this._account_id = account_id
-    this._token = token
+    this._twitchBot = twitchBot
   }
 
   async getAccountInfo({ token }: GetAccountInfo) {
@@ -53,12 +61,7 @@ export class TwitchRepository {
     return data
   }
 
-  authURL() {
-    const url = new URL(`${this._TWITCH_URL}/authorize`)
-    url.searchParams.set('client_id', this._config.bot_client_id!)
-    url.searchParams.set('response_type', 'token')
-    url.searchParams.set('scope', 'openid channel:manage:vips moderator:manage:banned_users')
-    url.searchParams.set('redirect_uri', location.origin + '/oauth')
-    return url.href
+  activeTTS({ login, token }: ActiveTTS) {
+    this._twitchBot.chatReader(login, token)
   }
 }
