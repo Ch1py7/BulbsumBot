@@ -6,13 +6,13 @@ import type { RefreshToken } from 'application/refreshToken'
 import type { TwitchBot } from 'infrastructure/irc/twitchBot'
 import type { TwitchRepository } from 'infrastructure/persistance/twitch/twitchRepository'
 // Services
-import type { ParseCommand, ParseMessage, ParseParameters, ParseSource, ParseTags } from 'infrastructure/services'
+import type { ParseMessage } from 'infrastructure/services'
 // Libraries
+import type axios from 'axios'
+import type http from 'http'
+import type socketio from 'socket.io'
 import type websocket from 'websocket'
 import type { Message } from 'websocket'
-import type axios from 'axios'
-import type socketio from 'socket.io'
-import type http from 'http'
 
 declare global {
   interface Dependencies {
@@ -26,11 +26,7 @@ declare global {
     twitchRepository: TwitchRepository
 
     // Services
-    parseCommand: ParseCommand
     parseMessage: ParseMessage
-    parseParameters: ParseParameters
-    parseSource: ParseSource
-    parseTags: ParseTags
   
     // Libraries
     websocket: typeof websocket

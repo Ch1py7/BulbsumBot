@@ -1,24 +1,13 @@
 import { ParsedMessage } from 'infrastructure/types/ParseMessage'
+import { ParseCommand, ParseParameters, ParseSource, ParseTags } from './index'
 
 export class ParseMessage {
-  parseCommand: Dependencies['parseCommand']
-  parseParameters: Dependencies['parseParameters']
-  parseSource: Dependencies['parseSource']
-  parseTags: Dependencies['parseTags']
-
   idx = 0
   rawTagsComponent: string | null = null
   rawSourceComponent: string | null = null
   rawCommandComponent: string | null = null
   rawParametersComponent: string | null = null
   parsedMessage: ParsedMessage = {} as ParsedMessage
-
-  constructor({ parseCommand, parseParameters, parseSource, parseTags }: Pick<Dependencies, 'parseCommand' | 'parseParameters' | 'parseSource' | 'parseTags'>) {
-    this.parseCommand = parseCommand
-    this.parseParameters = parseParameters
-    this.parseSource = parseSource
-    this.parseTags = parseTags
-  }
 
   execute(messageToParse: Dependencies['message']) {
     let idx = this.idx
@@ -55,20 +44,20 @@ export class ParseMessage {
         rawParametersComponent = message.slice(idx)
       }
 
-      parsedMessage.command = this.parseCommand.execute(rawCommandComponent) // new this.parseCommand(rawCommandComponent).execute()
+      parsedMessage.command = new ParseCommand().execute(rawCommandComponent) // new this.parseCommand(rawCommandComponent).execute()
 
       if (parsedMessage.command === null) {
         return null 
       } else {
         if (null != rawTagsComponent) {
-          parsedMessage.tags = this.parseTags.execute(rawTagsComponent)
+          parsedMessage.tags = new ParseTags().execute(rawTagsComponent)
         }
 
-        parsedMessage.source = this.parseSource.execute(rawSourceComponent) // new ParseSource(rawSourceComponent).execute()
+        parsedMessage.source = new ParseSource().execute(rawSourceComponent) // new ParseSource(rawSourceComponent).execute()
 
         parsedMessage.parameters = rawParametersComponent
         if (rawParametersComponent && rawParametersComponent[0] === '!') {      
-          parsedMessage.command = this.parseParameters.execute(rawParametersComponent, parsedMessage.command)
+          parsedMessage.command = new ParseParameters().execute(rawParametersComponent, parsedMessage.command)
         }
       }
       return parsedMessage

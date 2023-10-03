@@ -7,12 +7,12 @@ import { RefreshToken } from 'application/refreshToken'
 import { TwitchBot } from 'infrastructure/irc/twitchBot'
 import { TwitchRepository } from 'infrastructure/persistance/twitch/twitchRepository'
 // Services
-import { ParseCommand, ParseMessage, ParseParameters, ParseSource, ParseTags } from 'infrastructure/services'
+import { ParseMessage } from 'infrastructure/services'
 // Libraries
-import websocket from 'websocket'
 import axios from 'axios'
-import socketio from 'socket.io'
 import http from 'http'
+import socketio from 'socket.io'
+import websocket from 'websocket'
 
 export const container = createContainer<Dependencies>({
   injectionMode: InjectionMode.PROXY,
@@ -29,11 +29,7 @@ container.register({
   twitchRepository: asClass(TwitchRepository),
 
   // Services
-  parseCommand: asClass(ParseCommand),
   parseMessage: asClass(ParseMessage),
-  parseParameters: asClass(ParseParameters),
-  parseSource: asClass(ParseSource),
-  parseTags: asClass(ParseTags),
 
   // Libraries
   websocket: asValue(websocket),
