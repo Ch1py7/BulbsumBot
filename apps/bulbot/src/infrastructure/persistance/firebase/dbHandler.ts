@@ -1,29 +1,54 @@
-import type { app, database } from 'firebase-admin'
+import { FirebaseHandler } from '@snowdrive/firebase-handler'
 
-export class FirebaseHandler {
+export class DbHandler {
   private _admin: Dependencies['admin']
-  private _config: Dependencies['config']
+  private _config: Dependencies['firebaseConfig']
 
-  private _app: app.App | null = null
-  private _db: database.Database | null = null
-  private _instance: database.Database | null = null
+  private _instance: FirebaseHandler | undefined
 
-  constructor({ admin, config }: Pick<Dependencies, 'admin' | 'config'>) {
+  constructor({ admin, firebaseConfig }: Pick<Dependencies, 'admin' | 'firebaseConfig'>) {
     this._admin = admin
-    this._config = config
+    this._config = firebaseConfig
   }
 
   private _connect() {
+    const admin = this._admin
     try {
-      this._app = this._admin.initializeApp({
-        credential: this._admin.credential.cert(this._config.firebaseConfig.credential),
-        databaseURL: this._config.firebaseConfig.databaseURL
+      const dbHandler = new FirebaseHandler({
+        admin,
+        logger: {
+          info: (message, error) => {
+            if (!error) {
+              console.log(message)
+            } else {
+              console.log(error)
+            }
+            console.log(message)
+          },
+          error: (message, error) => {
+            if (!error) {
+              console.log(message)
+            } else {
+              console.log(error)
+            }
+            console.log(message)
+          }
+        },
+        config: {
+          firebase: {
+            databaseURL: this._config.databaseURL,
+            credential: {
+              serviceAccount: this._config.credential
+            }
+          }
+        }
       })
-      this._db = this._admin.database(this._app)
-      return this._db
+      return dbHandler
     } catch (error: unknown) {
-      console.log(`Error in database connection: ${error}`)
-      throw new Error(`Error in database connection: ${error}`)
+      if (error instanceof Error) {
+        console.error(error.message)
+      }
+      console.error(error)
     }
   }
 
@@ -36,14 +61,5 @@ export class FirebaseHandler {
       this._instance = this._createInstance()
     }
     return this._instance
-  }
-
-  public disconnect() {
-    if (this._app) {
-      this._app.delete()
-    }
-    this._app = null
-    this._db = null
-    this._instance = null
   }
 }
