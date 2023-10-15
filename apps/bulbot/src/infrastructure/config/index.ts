@@ -1,10 +1,2 @@
-export const config = {
-  firebaseConfig: {
-    credential: {
-      projectId: process.env.FIREBASE_PROJECT_ID!,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY!,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL!,
-    },
-    databaseURL: process.env.FIREBASE_DATABASE_URL!,
-  }
-}
+export * from './firebaseConfig'
+export * from './twitchBotConfig'
