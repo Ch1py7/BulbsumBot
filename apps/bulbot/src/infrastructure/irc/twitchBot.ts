@@ -1,49 +1,75 @@
-export class TwitchBot {
-  websocket: Dependencies['websocket']
-  socketIo: Dependencies['socketIo']
-  http: Dependencies['http']
-  parseMessage: Dependencies['parseMessage']
+import { RefreshingAuthProvider } from '@twurple/auth'
+import { ChatClient, ChatMessage } from '@twurple/chat'
+import { TokenCache } from 'infrastructure/services/tokenCache'
 
-  constructor({ websocket, socketIo, http, parseMessage }: Pick<Dependencies, 'websocket' | 'socketIo' | 'http' | 'parseMessage'>) {
-    this.websocket = websocket
-    this.http = http
-    this.socketIo = socketIo
-    this.parseMessage = parseMessage
+export class TwitchClient {
+  private _chatClient: ChatClient
+  private _tokenCache: TokenCache
+  private _authProvider: RefreshingAuthProvider
+  private _baseRepository: Dependencies['baseRepository']
+
+  constructor({ baseRepository, twitchBotConfig }: Pick<Dependencies, 'baseRepository' | 'twitchBotConfig'>) {
+    this._baseRepository = baseRepository
+    this._tokenCache = new TokenCache(twitchBotConfig.initialToken, twitchBotConfig.initialRefreshToken)
+    this._authProvider = new RefreshingAuthProvider({
+      clientId: twitchBotConfig.clientId!,
+      clientSecret: twitchBotConfig.clientSecret!,
+    })
+
+    const getChannels = async () => {
+      const channels = await this._baseRepository.getChannels()
+      return channels ?? []
+    }
+
+    this._chatClient = new ChatClient({
+      authProvider: this._authProvider,
+      channels: getChannels
+    })
   }
 
-  chatReader(login: string, token: string) {
-    const client = new this.websocket.client()
-    const parser = this.parseMessage
-
-    const { Server } = this.socketIo
-    const server = this.http.createServer()
-    const io = new Server(server, {
-      cors: {
-        origin: '*',
-        methods: ['GET', 'POST']
-      }
-    })
-
-    server.listen(8000)
-
-    client.on('connectFailed', function(error: Error) {
-      console.log('Connect Error: ' + error.toString())
-    })
-
-    client.on('connect', function(connection) {
-      console.log(`Bot Connected in ${login}`)
-
-      connection.sendUTF('CAP REQ :twitch.tv/membership twitch.tv/tags twitch.tv/commands')
-      connection.sendUTF(`PASS oauth:${token}`)
-      connection.sendUTF(`NICK ${login}`)
-
-      connection.sendUTF(`JOIN #${login}`)
-
-      connection.on('message', function (ircMessage) {
-        io.emit('chat', parser.execute(ircMessage))
+  private _initializeAuthenticationAndChat = async() => {
+    this._authProvider.onRefresh((_, newToken) => {
+      this._tokenCache.writeToken({
+        accessToken: newToken.accessToken,
+        expiresIn: newToken.expiresIn ?? 0,
+        obtainedAt: newToken.obtainmentTimestamp,
+        refreshToken: newToken.refreshToken,
       })
     })
+    await this._authProvider.addUserForToken({
+      expiresIn: this._tokenCache.current.expiresIn,
+      obtainmentTimestamp: this._tokenCache.current.obtainedAt,
+      refreshToken: this._tokenCache.current.refreshToken,
+      accessToken: this._tokenCache.current.accessToken,
+      scope: ['chat:read', 'chat:edit'],
+    }, ['chat'])
+    this._chatClient.connect()
+  }
+  
+  private _configureChatClientEventHandlers() {
+    this._chatClient.onAuthenticationFailure(() => {
+      console.error('Unable to authenticate with twitch chat')
+    })
+    this._chatClient.onJoinFailure(console.error)
+    this._chatClient.onJoinFailure((channel, reason) => {
+      console.error(`Unable to join channel:${channel} reason: ${reason}`)
+    })
+    this._chatClient.onDisconnect((manually) => {
+      if (manually) {
+        console.log(`left channel, connections: ${this._chatClient.currentChannels}`)
+      }
+    })
+    this._chatClient.onMessage(this._onMessage)
+  }
 
-    client.connect('ws://irc-ws.chat.twitch.tv:80')
+  // TODO: send the data
+  private _onMessage = async (channel: string, user: string, message: string, msgData: ChatMessage) => {
+    console.log(msgData)
+    console.log(message)
+  }
+
+  public connection() {
+    this._initializeAuthenticationAndChat()
+    this._configureChatClientEventHandlers()
   }
 }
