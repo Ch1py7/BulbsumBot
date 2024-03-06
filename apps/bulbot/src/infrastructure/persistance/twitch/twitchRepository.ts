@@ -8,8 +8,8 @@ import {
 export class TwitchRepository {
   private _TWITCH_URL = 'https://id.twitch.tv/oauth2'
   private _config = {
-    bot_client_id: process.env.BOT_CLIENT_ID,
-    bot_secret: process.env.BOT_SECRET,
+    bot_client_id: process.env.TWITCH_ID_CLIENT,
+    bot_secret: process.env.TWTITCH_SECRET_CLIENT,
   }
 
   private _axiosClient: Dependencies['AxiosClient']
