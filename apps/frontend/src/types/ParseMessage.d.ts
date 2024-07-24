@@ -85,3 +85,20 @@ export interface ParsedMessage {
   command: ParsedCommand | null
   parameters: string | null
 }
+
+export interface msg {
+  date: string,
+  user: string,
+  userInfo: {
+    userName: string,
+    displayName: string,
+    color: string,
+    userId: string,
+    isSubscriber: string,
+    isVip: string,
+    message: string
+  },
+  channel: channel,
+  channelId: string,
+  isFirst: string,
+}

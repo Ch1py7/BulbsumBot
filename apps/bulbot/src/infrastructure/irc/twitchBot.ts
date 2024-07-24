@@ -7,10 +7,19 @@ export class TwitchClient {
   private _tokenCache: TokenCache
   private _authProvider: RefreshingAuthProvider
   private _baseRepository: Dependencies['baseRepository']
+  private _socketIo: Dependencies['socketIo']
+  private _io
 
-  constructor({ baseRepository, twitchBotConfig }: Pick<Dependencies, 'baseRepository' | 'twitchBotConfig'>) {
+  constructor({ baseRepository, twitchBotConfig, socketIo }: Pick<Dependencies, 'baseRepository' | 'twitchBotConfig' | 'socketIo'>) {
     this._baseRepository = baseRepository
+    this._socketIo = socketIo
     this._tokenCache = new TokenCache(twitchBotConfig.initialToken, twitchBotConfig.initialRefreshToken)
+    this._io = new this._socketIo.Server(8000, {
+      cors: {
+        origin: '*'
+      }
+    })
+    
     this._authProvider = new RefreshingAuthProvider({
       clientId: twitchBotConfig.clientId!,
       clientSecret: twitchBotConfig.clientSecret!,
@@ -64,10 +73,26 @@ export class TwitchClient {
 
   // TODO: send the data
   private _onMessage = async (channel: string, user: string, message: string, msgData: ChatMessage) => {
-    console.log(msgData)
-    console.log(message)
-  }
+    const msg = {
+      date: msgData.date,
+      user: user,
+      userInfo: {
+        userName: msgData.userInfo.userName,
+        displayName: msgData.userInfo.displayName,
+        color: msgData.userInfo.color,
+        userId: msgData.userInfo.userId,
+        isSubscriber: msgData.userInfo.isSubscriber,
+        isVip: msgData.userInfo.isVip,
+        message: message
+      },
+      channel: channel,
+      channelId: msgData.channelId,
+      isFirst: msgData.isFirst
+    }
 
+    this._io.emit(`#${channel}`, msg)
+  }
+  
   public connection() {
     this._initializeAuthenticationAndChat()
     this._configureChatClientEventHandlers()

@@ -1,9 +1,9 @@
 import { FC, ReactElement, useEffect, useState } from 'react'
 import { io } from 'socket.io-client'
-import { ParsedMessage } from 'types/ParseMessage'
+import { msg } from 'types/ParseMessage'
 
 export const TTS: FC = (): ReactElement => {
-  const [message, setMessage] = useState<ParsedMessage | null>(null)
+  const [messages, setMessages] = useState<msg[]>([])
 
   const bulbotData: {
     token: string
@@ -11,20 +11,22 @@ export const TTS: FC = (): ReactElement => {
     access_token: string
   } = JSON.parse(window.sessionStorage.getItem('bulbot')!)
 
+  console.log(messages)
+
   useEffect(() => {
-    const socket = io('http://localhost:8000/')
-    console.log(socket.connect())
+    const socket = io('http://localhost:8000')
 
     socket.connect()
-    socket.on(`#${bulbotData.login}`, (arg1: ParsedMessage) => {
-      setMessage(arg1)
+
+    socket.on(`#${bulbotData.login}`, (arg1: msg) => {
+      setMessages(prev => [...prev, arg1])
     })
   }, [])
 
-  
+
   return (
     <>
-      {message?.parameters}
+      {messages?.map((message) => <h1>{message.userInfo.message}</h1>)}
     </>
   )
 }
